@@ -1,14 +1,14 @@
 import { Mastra } from "@mastra/core/mastra";
 import { PinoLogger } from "@mastra/loggers";
 import { LibSQLStore } from "@mastra/libsql";
-import { repoQaWorkflow } from "./workflows/repo-qa-workflow";
+import { askAboutRepoWorkflow } from "./workflows/ask-about-repo";
 import { codebaseAgent } from "./agents/codebase-agent";
 import { Observability } from "@mastra/observability";
-import { repoQaAgent } from "./agents/repo-qa-agent";
+import { askAboutRepoAgent } from "./agents/ask-about-repo-agent";
 
 export const mastra = new Mastra({
-  workflows: { repoQaWorkflow },
-  agents: { codebaseAgent, repoQaAgent },
+  workflows: { askAboutRepoWorkflow },
+  agents: { codebaseAgent, askAboutRepoAgent },
   storage: new LibSQLStore({
     id: "mastra-storage",
     // stores observability, scores, ... into memory storage, if it needs to persist, change to file:../mastra.db

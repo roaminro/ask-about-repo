@@ -223,34 +223,34 @@ Provide a clear, helpful answer with references to specific files.`;
 });
 
 /**
- * Repository Q&A Workflow
+ * Ask About Repo Workflow
  *
  * This workflow:
  * 1. Takes a repository URL, optional branch, and a question as input
  * 2. Clones the repository (or uses cached clone if it exists)
- * 3. Uses the codebase agent to answer the question
+ * 3. Uses the codebase agent to answer the question using docs and code
  * 4. Returns the agent's answer
  *
  * To force a fresh clone, manually delete the .repos/<repo-name> folder.
  *
  * Usage:
  * ```typescript
- * const workflow = mastra.getWorkflow("repoQaWorkflow");
+ * const workflow = mastra.getWorkflow("askAboutRepoWorkflow");
  * const run = await workflow.createRunAsync();
  * const result = await run.start({
  *   inputData: {
- *     repoUrl: "https://github.com/user/repo.git",
- *     question: "What does this codebase do?",
- *     branch: "develop", // Optional: specific branch
+ *     repoUrl: "https://github.com/mastra-ai/mastra",
+ *     question: "How do I create an agent?",
+ *     branch: "main", // Optional: specific branch
  *   }
  * });
  * console.log(result.result?.answer);
  * ```
  */
-export const repoQaWorkflow = createWorkflow({
-  id: "repo-qa-workflow",
+export const askAboutRepoWorkflow = createWorkflow({
+  id: "ask-about-repo",
   description:
-    "Clone a repository and ask questions about the codebase using an AI agent",
+    "Clone a git repository and answer questions about its code and documentation",
   inputSchema: z.object({
     repoUrl: z
       .url()
