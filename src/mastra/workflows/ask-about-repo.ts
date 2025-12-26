@@ -8,29 +8,36 @@ import { spawnSync } from "child_process";
 const REPOS_DIR = path.join(process.cwd(), "../../.repos");
 
 /**
- * Extract repo name from a git URL
+ * Extract owner and repo name from a git URL
  * Handles: https://github.com/user/repo.git, git@github.com:user/repo.git, etc.
+ * Returns "owner/repo" format to avoid conflicts between different users' repos
  */
-function getRepoName(repoUrl: string): string {
+function getRepoIdentifier(repoUrl: string): string {
   // Remove trailing .git if present
   const cleanUrl = repoUrl.replace(/\.git$/, "");
-  // Get the last part of the URL (repo name)
+  // Get the last two parts of the URL (owner/repo)
   const parts = cleanUrl.split(/[\/:]/).filter(Boolean);
+  if (parts.length >= 2) {
+    const repo = parts[parts.length - 1];
+    const owner = parts[parts.length - 2];
+    return `${owner}/${repo}`;
+  }
   return parts[parts.length - 1] || "repo";
 }
 
 /**
  * Get the local path for a cloned repository
+ * Uses owner/repo format to avoid conflicts between different users' repos
  * If a branch is specified, include it in the path to allow multiple branches
  */
 function getRepoPath(repoUrl: string, branch?: string): string {
-  const repoName = getRepoName(repoUrl);
+  const repoId = getRepoIdentifier(repoUrl);
   if (branch) {
     // Sanitize branch name for filesystem (replace / with -)
     const safeBranch = branch.replace(/\//g, "-");
-    return path.join(REPOS_DIR, `${repoName}@${safeBranch}`);
+    return path.join(REPOS_DIR, `${repoId}@${safeBranch}`);
   }
-  return path.join(REPOS_DIR, repoName);
+  return path.join(REPOS_DIR, repoId);
 }
 
 /**
